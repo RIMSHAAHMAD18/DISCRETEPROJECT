@@ -1,15 +1,10 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <string>
 
-const int MAX_STUDENTS = 100;
 using namespace std;
 
 struct Student {
-    std::string name;
-    int friendCount;
-};
     int neighbors[10];
     int neighborCount;
 
@@ -18,46 +13,24 @@ struct Student {
         int oneHopCount = 0, twoHopCount = 0, threeHopCount = 0;
         bool visited[numStudents];
 
-int findStudent(Student students[], int studentCount, const std::string& name) {
-    for (int i = 0; i < studentCount; i++) {
-        if (students[i].name == name) {
-            return i;
         for (int i = 0; i < numStudents; i++) {
             visited[i] = false;
         }
-    }
-    return -1;
-}
 
-int main() {
-    Student students[MAX_STUDENTS];
-    int studentCount = 0;
         int currentLevel[10], nextLevel[10];
         int currentLevelSize = 0, nextLevelSize = 0;
 
         visited[studentIndex] = true;
         currentLevel[currentLevelSize++] = studentIndex;
 
-    std::ifstream file("D:\\BSCS 1st Sem\\Final\\Discrete project\\Friends Dataset.csv");
-    if (!file) {
-        std::cerr << "Error: Cannot open the file." << std::endl;
-        return 1;
-    }
         int hopLevel = 0;
 
         while (currentLevelSize > 0 && hopLevel < 3) {
             nextLevelSize = 0;
 
-    std::string headerLine;
-    std::getline(file, headerLine);
             for (int i = 0; i < currentLevelSize; i++) {
                 int studentIndex = currentLevel[i];
 
-    std::string line;
-    while (std::getline(file, line)) {
-        std::istringstream ss(line);
-        std::string name;
-        std::string friendName;
                 if (hopLevel == 0) {
                     continue;
                 } else if (hopLevel == 1) {
@@ -71,7 +44,6 @@ int main() {
                 for (int j = 0; j < students[studentIndex].neighborCount; j++) {
                     int neighbor = students[studentIndex].neighbors[j];
 
-        std::getline(ss, name, ',');
                     if (!visited[neighbor]) {
                         visited[neighbor] = true;
                         nextLevel[nextLevelSize++] = neighbor;
@@ -81,19 +53,13 @@ int main() {
 
             currentLevelSize = nextLevelSize;
 
-        int mainStudentIndex = findStudent(students, studentCount, name);
             for (int i = 0; i < currentLevelSize; i++) {
                 currentLevel[i] = nextLevel[i];
             }
 
-        if (mainStudentIndex == -1) {
             hopLevel++;
         }
 
-            mainStudentIndex = studentCount;
-            students[studentCount].name = name;
-            students[studentCount].friendCount = 0;
-            studentCount++;
         cout << "1-hop students: ";
         for (int i = 0; i < oneHopCount; i++) {
             cout << oneHop[i] << " ";
@@ -106,8 +72,6 @@ int main() {
         }
         cout << endl;
 
-        while (std::getline(ss, friendName, ',')) {
-            if (!friendName.empty()) {
         cout << "3-hop students: ";
         for (int i = 0; i < threeHopCount; i++) {
             cout << threeHop[i] << " ";
@@ -116,47 +80,40 @@ int main() {
     }
 };
 
-                int friendIndex = findStudent(students, studentCount, friendName);
 void readGraphData(Student students[], int &numStudents, const string &filename) {
     ifstream infile(filename);
 
-                if (friendIndex == -1) {
     if (!infile) {
         cout << "Error opening file!" << endl;
         return;
     }
 
-                    students[studentCount].name = friendName;
-                    students[studentCount].friendCount = 1;
-                    studentCount++;
-                } else {
-                    students[friendIndex].friendCount++;
-                }
-            }
     infile >> numStudents;
+
     for (int i = 0; i < numStudents; i++) {
         infile >> students[i].neighborCount;
+
         for (int j = 0; j < students[i].neighborCount; j++) {
             infile >> students[i].neighbors[j];
         }
     }
-    file.close();
 
     infile.close();
 }
 
-    std::cout << "All Students:" << std::endl;
-    for (int i = 0; i < studentCount; ++i) {
-        std::cout << students[i].name << " (Friends: " << students[i].friendCount << ")" << std::endl;
-    }
 int main() {
     Student students[10];
     int numStudents;
-    string filename = "C:\\Users\\Abdul Wahab\\Downloads\\Friends Dataset.csv";
+
+    string filename = "C:\\Users\\Dell\\OneDrive\\Documents\\Discrete\\Friends Dataset.csv";
+
     readGraphData(students, numStudents, filename);
+
     int studentIndex;
+
     cout << "Enter the student index to find 1-hop, 2-hop, 3-hop: ";
     cin >> studentIndex;
+
     students[studentIndex].findHops(students, numStudents, studentIndex);
 
     return 0;
