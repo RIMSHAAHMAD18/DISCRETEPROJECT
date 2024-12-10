@@ -1,40 +1,84 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<CodeBlocks_project_file>
-	<FileVersion major="1" minor="6" />
-	<Project>
-		<Option title="module 2" />
-		<Option pch_mode="2" />
-		<Option compiler="gcc" />
-		<Build>
-			<Target title="Debug">
-				<Option output="bin/Debug/module 2" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-g" />
-				</Compiler>
-			</Target>
-			<Target title="Release">
-				<Option output="bin/Release/module 2" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Release/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-O2" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
-				</Linker>
-			</Target>
-		</Build>
-		<Compiler>
-			<Add option="-Wall" />
-			<Add option="-fexceptions" />
-		</Compiler>
-		<Unit filename="main.cpp" />
-		<Extensions>
-			<lib_finder disable_auto="1" />
-		</Extensions>
-	</Project>
-</CodeBlocks_project_file>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+
+const int MAX_STUDENTS = 200;
+
+struct Student {
+    std::string name;
+    int friendCount;
+};
+
+// Helper function to find a student in the array
+int findStudent(Student students[], int studentCount, const std::string& name) {
+    for (int i = 0; i < studentCount; i++) {
+        if (students[i].name == name) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int main() {
+    Student students[MAX_STUDENTS];
+    int studentCount = 0;
+
+    // Open the CSV file
+    std::ifstream file("C:\\Users\\Abdul Wahab\\Downloads\\Friends Dataset (1).csv");
+    if (!file) {
+        std::cerr << "Error: Cannot open the file." << std::endl;
+        return 1;
+    }
+
+    // Skip the header line
+    std::string headerLine;
+    std::getline(file, headerLine);
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::istringstream ss(line);
+        std::string name;
+        std::string friendName;
+
+        // Get the main student name
+        std::getline(ss, name, ',');
+
+        // Find or add the main student
+        int mainStudentIndex = findStudent(students, studentCount, name);
+
+        if (mainStudentIndex == -1) {
+            // Student not found, add new student
+            mainStudentIndex = studentCount;
+            students[studentCount].name = name;
+            students[studentCount].friendCount = 0;
+            studentCount++;
+        }
+
+        // Process friends
+        while (std::getline(ss, friendName, ',')) {
+            if (!friendName.empty()) {
+                // Find or add the friend
+                int friendIndex = findStudent(students, studentCount, friendName);
+
+                if (friendIndex == -1) {
+                    // Friend not found, add new student
+                    students[studentCount].name = friendName;
+                    students[studentCount].friendCount = 1;
+                    studentCount++;
+                } else {
+                    students[friendIndex].friendCount++;
+                }
+            }
+        }
+    }
+    file.close();
+
+    // Display all students and their friend counts
+    std::cout << "All Students:" << std::endl;
+    for (int i = 0; i < studentCount; ++i) {
+        std::cout << students[i].name << " (Friends: " << students[i].friendCount << ")" << std::endl;
+    }
+
+    return 0;
+}
