@@ -10,7 +10,7 @@ struct Student {
     int friendCount;
 };
 
-// Helper function to find a student in the array
+
 int findStudent(Student students[], int studentCount, const std::string& name) {
     for (int i = 0; i < studentCount; i++) {
         if (students[i].name == name) {
@@ -24,7 +24,7 @@ int main() {
     Student students[MAX_STUDENTS];
     int studentCount = 0;
 
-    // Open the CSV file
+    
     std::ifstream file("C:\\Users\\Abdul Wahab\\Downloads\\Friends Dataset (1).csv");
     if (!file) {
         std::cerr << "Error: Cannot open the file." << std::endl;
@@ -41,10 +41,10 @@ int main() {
         std::string name;
         std::string friendName;
 
-        // Get the main student name
+        
         std::getline(ss, name, ',');
 
-        // Find or add the main student
+        
         int mainStudentIndex = findStudent(students, studentCount, name);
 
         if (mainStudentIndex == -1) {
@@ -55,7 +55,7 @@ int main() {
             studentCount++;
         }
 
-        // Process friends
+        
         while (std::getline(ss, friendName, ',')) {
             if (!friendName.empty()) {
                 // Find or add the friend
@@ -74,7 +74,7 @@ int main() {
     }
     file.close();
 
-    // Display all students and their friend counts
+    
     std::cout << "All Students:" << std::endl;
     for (int i = 0; i < studentCount; ++i) {
         std::cout << students[i].name << " (Friends: " << students[i].friendCount << ")" << std::endl;
